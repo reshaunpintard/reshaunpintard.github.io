@@ -1,0 +1,18 @@
+/* Dark mode */
+body.dark {
+    background: #363D51;
+    transition: background-color 0.1s;
+    -webkit-transition: background-color 0.1s;
+    background-size: 150px 150px;
+    background-repeat: repeat;
+}
+.dark #copyright {
+    color: #5C6583;
+    background: #363D51;
+    border: 1px solid #3B4259;
+}
+@media screen and (max-width: 450px) {
+    body.dark {
+        background-size: 80px 80px;
+    }
+}

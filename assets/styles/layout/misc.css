@@ -1,0 +1,47 @@
+/* Misc pages */
+#misc #middle {
+    position: absolute;
+    margin: auto;
+    top: 20%;
+    left: 0;
+    right: 0;
+
+    padding: 15px;
+    width: 410px;
+    height: 320px;
+    text-align: center;
+
+    background: #FFFFFF;
+    color: #363D51;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.4);
+}
+#misc #middle a {
+    color: #0382C0;
+}
+#misc #middle a:hover {
+    color: #7E7FD6;
+}
+#misc #middle h1 {
+    font-size: 50px;
+    color: #F1D064;
+    text-shadow: -6px -3px 0 #363D51;
+}
+#misc #middle article {
+    width: 70%;
+    margin: 0 auto;
+    border: none;
+}
+
+@media screen and (max-width: 450px) {
+    #misc #middle {
+        width: 280px;
+        height: 335px;
+    }
+    #misc #middle h1 {
+        font-size: 30px;
+        text-shadow: -4px -2px 0 #363D51;
+    }
+    #misc #middle h2 {
+        font-size: 16px;
+    }
+}
