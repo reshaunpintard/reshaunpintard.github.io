@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/style/style.css" />
+    <link rel="stylesheet" href="assets/icon-fonts/css/icons.css" />
+    <!-- Load page data and functionality -->
+    <script src="assets/scripts/draggabilly.min.js"></script>
+    <script type="module" src="assets/scripts/CourseGuide.js"></script>
+    <title>Course Guide</title>
+</head>
+
+<body>
+    <div id="app">
+        <div id="popup">
+            <span id="close-button">&times</span>
+            <div id="course-area">
+                <h1 id="course-id"></h1>
+                <br>
+                <h2 id="course-name"></h2>
+                <br>
+                <span id="credit-hours"></span>
+                <br>
+                <span id="offering"></span>
+                <br>
+                <span id="prereqs"></span>
+                <br>
+                <span id="var-prereqs"></span>
+                <p id="description"></p>
+            </div>
+        </div>
+        <!-- FRESHMAN COURSES / FUNDAMENTALS -->
+        <section class="sections" id="fundamentals"></section>
+
+        <!-- SOPHOMORE COURSES / ENGINEERING FUNDAMENTALS -->
+        <section class="sections" id="engineering-fundamentals"></section>
+
+        <!-- JUNIOR COURSES / GATEWAY ELECTIVES -->
+        <section class="sections" id="gateway-electives"></section>
+
+        <!-- SENIOR COURSES / SPECIALIZATION ELECTIVES -->
+        <section class="sections" id="specialization-electives">
+            <div id="area">
+                <div id="spec-panel">
+                    <button class="specs active">
+                        <span class="svg-icon" id="pharma">
+                            <i class="icon-pill"></i>
+                        </span>
+                        <span class="svg-text">Pharmacoengineering</span>
+                    </button>
+                    <div class="pane show" id="pharma-pane"></div>
+                    <button class="specs">
+                        <span class="svg-icon" id="microdevices">
+                            <i class="icon-chip"></i>
+                        </span>
+                        <span class="svg-text">Medical Microdevices</span>
+                    </button>
+                    <div class="pane" id="microdevices-pane"></div>
+                    <button class="specs">
+                        <span class="svg-icon" id="biosignals">
+                            <i class="icon-microscope"></i>
+                        </span>
+                        <span class="svg-text">Biosignals and Imaging</span>
+                    </button>
+                    <div class="pane" id="biosignals-pane"></div>
+                    <button class="specs">
+                        <span class="svg-icon" id="rehabilitation">
+                            <i class="icon-arm"></i>
+                        </span>
+                        <span class="svg-text">Rehabilitation Engineering</span>
+                    </button>
+                    <div class="pane" id="rehabilitation-pane"></div>
+                    <button class="specs">
+                        <span class="svg-icon" id="regenerative">
+                            <i class="icon-dna"></i>
+                        </span>
+                        <span class="svg-text">Regenerative Medicine</span>
+                    </button>
+                    <div class="pane" id="regenerative-pane"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>
