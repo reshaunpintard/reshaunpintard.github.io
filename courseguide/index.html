@@ -13,11 +13,10 @@
 
 <body>
     <div id="app">
+        <!-- SUMMARY VIEW POP UP -->
         <div id="popup">
             <span id="close-button">&times</span>
             <div id="course-area">
-                <h1 id="course-id"></h1>
-                <br>
                 <h2 id="course-name"></h2>
                 <br>
                 <span id="credit-hours"></span>
@@ -37,10 +36,14 @@
         <section class="sections" id="engineering-fundamentals"></section>
 
         <!-- JUNIOR COURSES / GATEWAY ELECTIVES -->
-        <section class="sections" id="gateway-electives"></section>
+        <section class="sections" id="third">
+            <section id="specialization-electives"></section>
+            <section id="gateway-electives"></section>
+        </section>
 
         <!-- SENIOR COURSES / SPECIALIZATION ELECTIVES -->
-        <section class="sections" id="specialization-electives">
+
+        <section class="sections" id="fourth">
             <div id="area">
                 <div id="spec-panel">
                     <button class="specs active">
@@ -81,6 +84,7 @@
                 </div>
             </div>
         </section>
+
     </div>
 </body>
 

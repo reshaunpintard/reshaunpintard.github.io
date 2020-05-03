@@ -8,6 +8,8 @@ let coursesHTML = [];
 let coursesVars = [];
 // Specialization tabs for accordion pane
 const specializations = document.getElementsByClassName("specs");
+// List of movable course objects
+const movables = [];
 
 // Gets courses asynchronously from file
 async function getCourses() {
@@ -32,10 +34,16 @@ if (document.addEventListener) {
     // Listen to close popup
     document.getElementById("close-button").onclick = () => {
         document.getElementById("popup").style.display = "none";
+        for (let i = 0; i < coursesHTML.length; i++) {
+            coursesHTML[i].classList.remove("looking");
+        }
     }
     document.onkeydown = function (e) {
         if (e.key == "Escape") {
             document.getElementById("popup").style.display = "none";
+            for (let i = 0; i < coursesHTML.length; i++) {
+                coursesHTML[i].classList.remove("looking");
+            }
         }
     }
 } else if (document.attachEvent) {
@@ -104,8 +112,6 @@ async function populate() {
             buildCourse("se", regenerative, i, csvs);
         }
     }
-    // List of movable course objects
-    const movables = [];
     // z-Index counter for precedence
     let count = 0;
     // Designations
@@ -113,12 +119,50 @@ async function populate() {
     // Adds Draggabilly on all course elements
     for (var i = 0; i < coursesHTML.length; i++) {
         if (designations.indexOf(coursesHTML[i].variable.designation) !== -1) {
-            var movable = new Draggabilly(coursesHTML[i], { containment: '#app' });
+            var movable = new Draggabilly(coursesHTML[i], { containment: '#app', grid: [10, 10] });
+
+            var actionTime = 0;
+            var wait = 500;
+            var action = null;
             // Clicked without drag
             movable.on('staticClick', function () {
-                // Adds event listener to the course blocks and waits for interaction
-                traceCourse(this.element);
+                // Double click else single click action
+                if ((new Date().getTime() - actionTime) < wait) {
+                    clearTimeout(action)
+                    this.element.style.display = "none";
+                    actionTime = 0;
+                } else {
+                    // Single click
+                    actionTime = new Date().getTime();
+                    action = setTimeout(traceCourse, wait - 200, this.element);
+                }
             });
+
+            var pressTimer = null;
+
+            movable.on('pointerDown', function () {
+                var element = this.element;
+                pressTimer = setTimeout(function () {
+                    console.log("long click");
+                    element.classList.toggle("highlight");
+                }, 1000);
+            });
+            movable.on('pointerMove', function () {
+                if (this.dragPoint.x !== 0 && this.dragPoint.y !== 0) {
+                    clearTimeout(pressTimer);
+                    pressTimer = null;
+                }
+            });
+            movable.on('pointerUp', function (e) {
+                if (pressTimer !== null) {
+                    clearTimeout(pressTimer);
+                    pressTimer = null;
+
+                    // CANCEL MOUSEUP EVENT
+                    // e.stopPropagation();
+                }
+            });
+
             // Bring to front
             movable.on('dragStart', function () {
                 if (count > 1000) {
@@ -148,7 +192,6 @@ async function populate() {
     console.log(coursesVars);
 }
 
-
 /*
 *
 * Builds the course elements
@@ -166,6 +209,7 @@ function buildCourse(order, section, index, coursesCSV) {
     var blue = document.createElement("div");
     // Add classes to the elements
     item.classList.add("item");
+    item.classList.add(order);
     course.classList.add("course");
     courseIDs.classList.add("course-ids");
     courseNames.classList.add("course-names");
@@ -173,7 +217,6 @@ function buildCourse(order, section, index, coursesCSV) {
     indicator.classList.add("indicators");
     red.classList.add("rect", "red");
     blue.classList.add("rect", "blue");
-    item.classList.add(order);
     // Assign features to the elements
     course.id = coursesCSV[index].courseID;
     course.variable = coursesCSV[index];
@@ -316,6 +359,10 @@ function arrayProperties(objects, titles) {
 */
 function traceCourse(element) {
     try {
+        for (let i = 0; i < coursesHTML.length; i++) {
+            coursesHTML[i].classList.remove("looking");
+        }
+        element.classList.add("looking");
         console.log(element.variable);
         buildPopup(element.variable);
     } catch (error) {
@@ -332,7 +379,6 @@ function traceCourse(element) {
 */
 function buildPopup(event) {
     document.getElementById("popup").style.display = "block";
-    document.getElementById("course-id").innerHTML = event.courseID.toUpperCase().replace(/([^\d\s%])(\d)/g, '$1 $2');
     document.getElementById("course-name").innerHTML = event.courseName.replace(/"/g, "");
     if (event.hours == null) {
         document.getElementById("credit-hours").innerHTML = "Credit hours: hours vary";
