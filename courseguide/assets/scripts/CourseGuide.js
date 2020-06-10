@@ -8,15 +8,25 @@ let coursesHTML = [];
 let coursesVars = [];
 // Specialization tabs for accordion pane
 const specializations = document.getElementsByClassName("specs");
+// Space to insert prereq queue data
+const insertSpace = document.getElementById("prereq-action-space");
+// The trash can
+let trash = document.getElementById("trash");
 // List of movable course objects
 const movables = [];
+// List of selected course objects
+let selected = [];
+// Page positioning variables
+let startX, startY, endX, endY = 0;
 
 // Gets courses asynchronously from file
 async function getCourses() {
     let request = await fetch(file);
     let data = await request.text();
     let objects = csvObjects(data);
+
     arrayProperties(objects, ["prereqs", "varPrereqs"]);
+
     return objects;
 }
 
@@ -27,23 +37,66 @@ window.onload = function () {
 
 // Checks for addEventListener
 if (document.addEventListener) {
+    // Disable drag capability
+    document.querySelector('#drag-interact').onchange = function () {
+        if (this.checked)
+            for (let i in movables)
+                movables[i].enable();
+        else
+            for (let i in movables)
+                movables[i].disable();
+    }
+    // Show group of courses by toggling checkboxes
+    document.getElementById("col-one").onclick = function () {
+        var section = document.getElementById("fundamentals");
+        this.checked ? section.style.display = "grid" : section.style.display = "none";
+    }
+    document.getElementById("col-two").onclick = function () {
+        var section = document.getElementById("engineering-fundamentals");
+        this.checked ? section.style.display = "grid" : section.style.display = "none";
+    }
+    document.getElementById("col-three").onclick = function () {
+        var section = document.getElementById("gateway-electives");
+        this.checked ? section.style.display = "grid" : section.style.display = "none";
+    }
+    document.getElementById("col-four").onclick = function () {
+        var section = document.getElementById("specialization-electives");
+        this.checked ? section.style.display = "grid" : section.style.display = "none";
+    }
     // Adds event listener to specialization bottons
     for (var i = 0; i < specializations.length; i++) {
         specializations[i].addEventListener("click", accordion);
     }
+    // Add event listener to tracing button
+    document.getElementsByClassName("tracing")[0].addEventListener("click", tracingOption);
+    document.getElementsByClassName("tracing")[1].addEventListener("click", tracingOption);
     // Listen to close popup
     document.getElementById("close-button").onclick = () => {
         document.getElementById("popup").style.display = "none";
         for (let i = 0; i < coursesHTML.length; i++) {
             coursesHTML[i].classList.remove("looking");
+            coursesHTML[i].classList.remove("looking-prereq");
         }
     }
-    document.onkeydown = function (e) {
+    document.onkeydown = e => {
         if (e.key == "Escape") {
             document.getElementById("popup").style.display = "none";
             for (let i = 0; i < coursesHTML.length; i++) {
                 coursesHTML[i].classList.remove("looking");
+                coursesHTML[i].classList.remove("looking-prereq");
             }
+        }
+        if (e.key == "Delete" || e.key == "Backspace") {
+            for (let i = 0; i < coursesHTML.length; i++) {
+                if (coursesHTML[i].classList.contains("looking")) {
+                    coursesHTML[i].parentElement.remove();
+                    document.getElementById("popup").style.display = "none";
+                }
+            }
+            for (var elements of selected) {
+                elements.parentElement.remove();
+            }
+            trash.style.display = "none";
         }
     }
 } else if (document.attachEvent) {
@@ -69,6 +122,23 @@ function accordion() {
         }
         this.classList.toggle("active");
         this.nextElementSibling.classList.toggle("show");
+    }
+}
+
+/*
+* The tracing option in summary view
+*/
+function tracingOption() {
+    if (this.id === "prereq-button") {
+        this.classList.toggle("active", true);
+        document.getElementById("prereq-action-pane").classList.toggle("show", true);
+        document.getElementById("filter-button").classList.toggle("active", false);
+        document.getElementById("filter-action-pane").classList.toggle("show", false);
+    } else if (this.id === "filter-button") {
+        this.classList.toggle("active", true);
+        document.getElementById("filter-action-pane").classList.toggle("show", true);
+        document.getElementById("prereq-button").classList.toggle("active", false);
+        document.getElementById("prereq-action-pane").classList.toggle("show", false);
     }
 }
 
@@ -119,58 +189,56 @@ async function populate() {
     // Adds Draggabilly on all course elements
     for (var i = 0; i < coursesHTML.length; i++) {
         if (designations.indexOf(coursesHTML[i].variable.designation) !== -1) {
-            var movable = new Draggabilly(coursesHTML[i], { containment: '#app', grid: [10, 10] });
-
-            var actionTime = 0;
+            var movable = new Draggabilly(coursesHTML[i], { containment: '#middle', grid: [10, 10] });
+            var clickTime, pressTime = 0;
+            var click, longPress = null;
+            var x, y = 0;
             var wait = 500;
-            var action = null;
-            // Clicked without drag
-            movable.on('staticClick', function () {
-                // Double click else single click action
-                if ((new Date().getTime() - actionTime) < wait) {
-                    clearTimeout(action)
-                    this.element.style.display = "none";
-                    actionTime = 0;
-                } else {
-                    // Single click
-                    actionTime = new Date().getTime();
-                    action = setTimeout(traceCourse, wait - 200, this.element);
-                }
-            });
-
-            var pressTimer = null;
 
             movable.on('pointerDown', function () {
+                // Long press functionality
                 var element = this.element;
-                pressTimer = setTimeout(function () {
-                    console.log("long click");
+                x = this.dragPoint.x;
+                y = this.dragPoint.y;
+                pressTime = new Date().getTime();
+
+                longPress = setTimeout(() => {
                     element.classList.toggle("highlight");
-                }, 1000);
-            });
-            movable.on('pointerMove', function () {
+                }, wait);
+            }).on('pointerMove', function () {
                 if (this.dragPoint.x !== 0 && this.dragPoint.y !== 0) {
-                    clearTimeout(pressTimer);
-                    pressTimer = null;
+                    clearTimeout(longPress);
+                    longPress = null;
                 }
-            });
-            movable.on('pointerUp', function (e) {
-                if (pressTimer !== null) {
-                    clearTimeout(pressTimer);
-                    pressTimer = null;
-
-                    // CANCEL MOUSEUP EVENT
-                    // e.stopPropagation();
+            }).on('pointerUp', function () {
+                if (this.dragPoint.x === x && this.dragPoint.y === y && (new Date().getTime() - pressTime) < wait) {
+                    if ((new Date().getTime() - clickTime) < wait) {
+                        // Double click
+                        this.element.parentElement.remove();
+                        clearTimeout(click)
+                        clickTime = 0;
+                    } else {
+                        // Single click
+                        for (let i = 0; i < coursesHTML.length; i++) {
+                            coursesHTML[i].classList.remove("looking");
+                        }
+                        clickTime = new Date().getTime();
+                        click = setTimeout(traceCourse, wait - 200, this.element);
+                    }
                 }
-            });
-
-            // Bring to front
-            movable.on('dragStart', function () {
-                if (count > 1000) {
+                pressTime = 0;
+                if (longPress !== null) {
+                    clearTimeout(longPress);
+                    longPress = null;
+                }
+            }).on('dragStart', function () {
+                // Bring to front
+                if (count > 100) {
                     count = 0;
                 }
-                count = count + 1;
-                this.element.style.zIndex = count;
+                this.element.style.zIndex = ++count;
             });
+
             movables.push(movable);
         } else {
             var container = "#" + coursesHTML[i].variable.designation + "-pane";
@@ -182,7 +250,7 @@ async function populate() {
                 if (count > 1000) {
                     count = 0;
                 }
-                count = count + 1;
+                count += 1;
                 this.element.style.zIndex = count;
             });
             movables.push(movable);
@@ -190,6 +258,65 @@ async function populate() {
     }
     // Log courses
     console.log(coursesVars);
+
+    // Add selection functionality
+    const selection = new Selection({
+        class: 'selection-box',
+        selectables: ['.course'],
+        startareas: ['#middle'],
+        boundaries: ['#middle'],
+        mode: 'touch',
+        disableTouch: false,
+        singleClick: true
+    });
+
+    selection.on('start', ({ inst }) => {
+        startX = event.pageX;
+        startY = event.pageY;
+        console.log("START\nx: " + startX + ", y: " + startY);
+
+        for (var elements of selected) {
+            elements.classList.remove("selected");
+        }
+        inst.clearSelection();
+        trash.style.display = "none";
+    }).on('move', ({ changed: { removed, added } }) => {
+        for (const elements of added) {
+            elements.classList.add("selected");
+        }
+        for (const elements of removed) {
+            elements.classList.remove("selected");
+        }
+    }).on('stop', ({ inst }) => {
+        endX = event.pageX;
+        endY = event.pageY;
+        console.log("END\nx: " + endX + ", y: " + endY);
+
+        inst.keepSelection();
+        selected = selection.getSelection();
+        if (selected.length !== 0) {
+            trash.style.display = "block";
+            // group();
+        }
+        console.log(selected);
+    });
+
+    document.querySelector('#select-interact').onchange = function () {
+        if (this.checked)
+            selection.enable();
+        else
+            selection.disable();
+    }
+
+    trash.onclick = () => {
+        trash.style.display = "none";
+        for (var elements of selected) {
+            elements.parentElement.remove();
+        }
+        selection.clearSelection();
+        selected = [];
+        console.log(selected);
+    };
 }
 
 /*
@@ -252,7 +379,7 @@ function csvObjects(data) {
     let headers = [];
     let rows = data.split(/\r|\n/);
 
-    rows.forEach((line, j) => {
+    rows.forEach((line, index) => {
         line = line.trim();
         let state = 0;
         let temp = [];
@@ -307,11 +434,11 @@ function csvObjects(data) {
             temp = [];
         }
 
-        if (j == 0) {
+        if (index == 0) {
             headers.push(...row);
         } else {
             if (headers.length == row.length) {
-                let o = {};
+                let object = {};
                 for (let k = 0; k < row.length; k++) {
                     let cell = row[k];
 
@@ -324,10 +451,9 @@ function csvObjects(data) {
                     } else if (cell.toLowerCase() == 'false') {
                         cell = false;
                     }
-
-                    o[headers[k]] = cell;
+                    object[headers[k]] = cell;
                 }
-                objects.push(o);
+                objects.push(object);
             }
         }
     });
@@ -359,12 +485,10 @@ function arrayProperties(objects, titles) {
 */
 function traceCourse(element) {
     try {
-        for (let i = 0; i < coursesHTML.length; i++) {
-            coursesHTML[i].classList.remove("looking");
-        }
-        element.classList.add("looking");
         console.log(element.variable);
+        clearQueue();
         buildPopup(element.variable);
+        prereqQueue(element);
     } catch (error) {
         var o = element.id.toUpperCase().replace(/([^\d\s%])(\d)/g, '$1 $2');
 
@@ -375,32 +499,136 @@ function traceCourse(element) {
 }
 
 /*
+*
+*/
+function clearQueue() {
+    for (let i = 0; i < coursesHTML.length; i++) {
+        coursesHTML[i].classList.remove("looking");
+        coursesHTML[i].classList.remove("looking-prereq");
+    }
+    while (insertSpace.firstChild)
+        insertSpace.firstChild.remove();
+}
+
+/*
+*
+*/
+function prereqQueue(elements) {
+    // initialize new buffer array
+    var temp = [];
+    // check if elements is an array
+    if (Array.isArray(elements)) {
+        let columnInsert = document.createElement("span");
+        columnInsert.classList.add("column-insert");
+        insertSpace.appendChild(columnInsert);
+        // go through array of elements
+        for (let i in elements) {
+            let itemInsert = document.createElement("span");
+            itemInsert.classList.add("item-insert");
+            columnInsert.appendChild(itemInsert);
+            itemInsert.innerHTML = elements[i].variable.courseID.replace(/([^\d\s%])(\d)/g, '$1 $2');
+            itemInsert.addEventListener("click", () => {
+                for (let j in coursesHTML)
+                    if (coursesHTML[j].variable.courseID === elements[i].variable.courseID)
+                        coursesHTML[j].classList.remove("hovered");
+                traceCourse(elements[i]);
+            });
+            itemInsert.addEventListener("mouseover", () => {
+                for (let j in coursesHTML)
+                    if (coursesHTML[j].variable.courseID === elements[i].variable.courseID)
+                        coursesHTML[j].classList.add("hovered");
+            });
+            itemInsert.addEventListener("mouseout", () => {
+                for (let j in coursesHTML)
+                    if (coursesHTML[j].variable.courseID === elements[i].variable.courseID)
+                        coursesHTML[j].classList.remove("hovered");
+            });
+            elements[i].classList.add("looking-prereq"); // TODO
+            // check if element has prereq
+            if (elements[i].variable.hasPrereq) {
+                // go through prereqs and locate courses in database
+                for (let j in elements[i].variable.prereqs) {
+                    for (let k in coursesHTML) {
+                        // place course in buffer
+                        if (coursesHTML[k].variable.courseID === elements[i].variable.prereqs[j]) {
+                            temp.push(coursesHTML[k]);
+                        }
+                    }
+                }
+            }
+        }
+        if (temp.length !== 0) {
+            var unique = [...new Set(temp)];
+            prereqQueue(unique);
+        }
+        if (!columnInsert.hasChildNodes())
+            columnInsert.remove();
+    } else {
+        // check if given has prereq
+        if (elements.variable.hasPrereq) {
+            let columnInsert = document.createElement("span");
+            columnInsert.classList.add("column-insert");
+            insertSpace.appendChild(columnInsert);
+
+            let itemInsert = document.createElement("span");
+            itemInsert.classList.add("item-insert");
+            columnInsert.appendChild(itemInsert);
+
+            itemInsert.innerHTML = elements.variable.courseID.replace(/([^\d\s%])(\d)/g, '$1 $2');
+            elements.classList.add("looking");
+            // go through prereqs and locate courses in database
+            for (let i in elements.variable.prereqs) {
+                for (let j in coursesHTML) {
+                    // place course in buffer
+                    if (coursesHTML[j].variable.courseID === elements.variable.prereqs[i]) {
+                        temp.push(coursesHTML[j]);
+                    }
+                }
+            }
+            prereqQueue(temp);
+        }
+    }
+}
+
+/*
 * Populate the popup summary view with course data
 */
 function buildPopup(event) {
-    document.getElementById("popup").style.display = "block";
+    document.getElementById("popup").style.display = "flex";
     document.getElementById("course-name").innerHTML = event.courseName.replace(/"/g, "");
+
     if (event.hours == null) {
-        document.getElementById("credit-hours").innerHTML = "Credit hours: hours vary";
+        document.getElementById("bubble").innerHTML = "?";
     } else {
-        document.getElementById("credit-hours").innerHTML = "Credit hours: " + event.hours;
+        document.getElementById("bubble").innerHTML = event.hours;
     }
+
     if (event.isNCSU && !event.isUNC) {
-        document.getElementById("offering").innerHTML = "<i>This course is offered only on NC State's campus.</i>";
+        document.getElementById("offering").innerHTML = "<i>This course is offered at NC State.</i>";
     } else if (!event.isNCSU && event.isUNC) {
-        document.getElementById("offering").innerHTML = "<i>This course is offered only on UNC's campus.</i>";
+        document.getElementById("offering").innerHTML = "<i>This course is offered at UNC.</i>";
     } else {
-        document.getElementById("offering").innerHTML = "<i>This course is offered on both UNC and NC State's campus.</i>";
-    }
-    if (event.prereqs == null) {
-        document.getElementById("prereqs").innerHTML = "Prerequisites: <i>none</i>";
-    } else {
-        document.getElementById("prereqs").innerHTML = "Prerequisites: <i>" + event.prereqs + "</i>";
-    }
-    if (event.varPrereqs == null) {
-        document.getElementById("var-prereqs").innerHTML = "Coreqs/Alternatives: <i>none</i>";
-    } else {
-        document.getElementById("var-prereqs").innerHTML = "Coreqs/Alternatives: <i>" + event.varPrereqs + "</i>";
+        document.getElementById("offering").innerHTML = "<i>This course is offered on both campuses.</i>";
     }
     document.getElementById("description").innerHTML = event.description;
+}
+
+/*
+*
+*/
+function group() {
+    var width = Math.abs(endX - startX);
+    var group = document.createElement("div");
+    group.classList.add("group");
+    group.style.width = width + "px";
+    group.style.left = String(startX) + "px";
+    group.style.bottom = String(document.body.scrollHeight - startY) + "px";
+    document.getElementById("app").appendChild(group);
+
+    console.log("Selection width: " + width);
+
+    for (var elements of selected) {
+        group.appendChild(elements.parentElement);
+    }
+    // var movable = new Draggabilly(group, { handle: ".course" });
 }
