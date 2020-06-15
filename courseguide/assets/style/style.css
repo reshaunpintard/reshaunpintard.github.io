@@ -805,10 +805,14 @@ html, body {
 
 /* iPhone X/XS */
 @media screen and (max-width: 1024px) {
- /*   #app {
-        flex-direction: column;
+    #app {
+        grid-template-columns: 280px auto 340px;
+    }
+    #interaction-area {
+        overflow: auto;
     }
 
+/*
     #fundamentals {
         height: 25%;
         width: 100%;
