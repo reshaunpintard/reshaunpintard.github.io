@@ -13,74 +13,27 @@
 </head>
 
 <body>
-    <!-- SUMMARY VIEW POP UP -->
-    <div id="popup">
-        <span id="close-button">&times</span>
-        <div id="course-area">
-            <div>
-                <span id="course-name"></span>
-                <span id="credit-hours">
-                    <span>Credit hours</span>
-                    <span>
-                        <span id="bubble"></span>
-                    </span>
-                </span>
-                <span id="offering"></span>
-            </div>
-            <span id="description"></span>
-        </div>
-
-        <div id="tracer-area">
-            <div id="button-row">
-                <button id="prereq-button" class="tracing active">Prerequisites</button>
-                <button id="filter-button" class="tracing">Filter</button>
-            </div>
-            <div id="prereq-action-pane" class="action-pane show">
-                <span id="prereq-action-space"></span>
-            </div>
-            <div id="filter-action-pane" class="action-pane">
-                <div id="filter-action-space">
-                    <div class="completed">
-                        <div>Completed Classes</div>
-                        <div></div>
-                    </div>
-                    <div class="filtered">
-                        <div>Filtered Classes</div>
-                        <div></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="app">
         <!-- CONTROL PANEL AND SETTINGS -->
         <section id="control">
             <div class="control-option">
                 <span class="col-text">Fundamentals</span>
                 <label class="col-checkbox">
-                    <input type="checkbox" checked="checked" id="col-one">
+                    <input type="checkbox" checked="checked" id="toggle-one">
                     <span class="checkmark"></span>
                 </label>
             </div>
             <div class="control-option">
                 <span class="col-text">Engineering Fundamentals</span>
                 <label class="col-checkbox">
-                    <input type="checkbox" checked="checked" id="col-two">
+                    <input type="checkbox" checked="checked" id="toggle-two">
                     <span class="checkmark"></span>
                 </label>
             </div>
             <div class="control-option">
                 <span class="col-text">Gateway Electives</span>
                 <label class="col-checkbox">
-                    <input type="checkbox" checked="checked" id="col-three">
-                    <span class="checkmark"></span>
-                </label>
-            </div>
-            <div class="control-option">
-                <span class="col-text">Specialization Electives</span>
-                <label class="col-checkbox">
-                    <input type="checkbox" checked="checked" id="col-four">
+                    <input type="checkbox" checked="checked" id="toggle-three">
                     <span class="checkmark"></span>
                 </label>
             </div>
@@ -101,24 +54,69 @@
                 </label>
             </div>
 
+            <ul id="database"></ul>
+
         </section>
 
         <section id="middle">
-            <!-- FRESHMAN COURSES / FUNDAMENTALS -->
-            <section class="sections" id="fundamentals"></section>
+            <div id="interaction-area">
+                <!-- FRESHMAN COURSES / FUNDAMENTALS -->
+                <section class="sections" id="fundamentals"></section>
 
-            <!-- SOPHOMORE COURSES / ENGINEERING FUNDAMENTALS -->
-            <section class="sections" id="engineering-fundamentals"></section>
+                <!-- SOPHOMORE COURSES / ENGINEERING FUNDAMENTALS -->
+                <section class="sections" id="engineering-fundamentals"></section>
 
-            <!-- JUNIOR COURSES / GATEWAY ELECTIVES -->
-            <section class="sections" id="third">
-                <section id="specialization-electives"></section>
-                <section id="gateway-electives"></section>
-            </section>
+                <!-- JUNIOR COURSES / GATEWAY ELECTIVES -->
+                <section class="sections" id="third">
+                    <section id="specialization-electives"></section>
+                    <section id="gateway-electives"></section>
+                </section>
+            </div>
+            <!-- SUMMARY VIEW POP UP -->
+            <div id="popup">
+                <span id="close-button">&times</span>
+                <div id="course-area">
+                    <div>
+                        <span id="course-name"></span>
+                        <span id="credit-hours">
+                            <span>Credit hours</span>
+                            <span>
+                                <span id="bubble"></span>
+                            </span>
+                        </span>
+                        <span id="offering"></span>
+                    </div>
+                    <span id="description"></span>
+                </div>
+                <div id="tracer-area">
+                    <div id="button-row">
+                        <button id="prereq-button" class="tracing active">Prerequisites</button>
+                        <button id="filter-button" class="tracing">Filter</button>
+                    </div>
+
+                    <div id="prereq-action-pane" class="action-pane show">
+                        <span id="prereq-action-space"></span>
+                    </div>
+
+                    <div id="filter-action-pane" class="action-pane">
+                        <div id="filter-action-space">
+                            <div class="completed">
+                                <div>Completed Classes</div>
+                                <div></div>
+                            </div>
+                            <div class="filtered">
+                                <div>Filtered Classes</div>
+                                <div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </section>
 
         <!-- SENIOR COURSES / SPECIALIZATION ELECTIVES -->
-        <section class="sections" id="aside">
+        <section id="aside">
             <div id="spec-panel">
                 <button class="specs active">
                     <span class="svg-icon" id="pharma">
