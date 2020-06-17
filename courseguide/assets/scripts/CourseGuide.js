@@ -239,7 +239,7 @@ async function populate() {
         startareas: ['#interaction-area'],
         boundaries: ['#interaction-area'],
         mode: 'touch',
-        disableTouch: false,
+        disableTouch: true,
         singleClick: true
     });
     selection.on('start', ({ inst }) => {
