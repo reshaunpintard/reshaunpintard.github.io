@@ -177,44 +177,59 @@ async function populate() {
 
     // Build the courses on the main panel and in the entry log
     csvObjects.forEach(row => {
+        // Build all entries
         buildEntry(row);
         if (row.designation !== null) {
+            // Only build courses that have a designation
             buildCourse(row);
         }
     });
 
+    // Highlights all database entries that were populated
     dashboardCheck();
 
     let targetEntry;
     let hasCourse;
-
-    for (let entry in databaseEntries) {
-        databaseEntries[entry].draggable = true;
-        databaseEntries[entry].ondragstart = function () {
-            middle.style.border = "4px solid #307AFF";
+    let segments = [fundamentals, engineering, gateway, specialization];
+    // Handle dragging database entries into main view
+    databaseEntries.forEach(entry => {
+        entry.draggable = true;
+        entry.ondragstart = function () {
+            middle.style.borderColor = "#307AFF";
             targetEntry = this;
         };
-        databaseEntries[entry].ondragend = function () {
-            middle.style.border = "4px solid transparent";
+        entry.ondragend = function () {
+            middle.style.borderColor = "transparent";
         };
-    }
-    middle.ondragover = function (event) {
-        for (let i in coursesHTML)
-            if (targetEntry.variable.courseID == coursesHTML[i].variable.courseID)
-                hasCourse = true;
-        if (!hasCourse)
-            this.style.border = "4px solid #FBDB2C";
-        else
-            this.style.border = "4px solid #FC7165";
-        event.preventDefault();
-    }
-    middle.ondrop = function () {
-        console.log(coursesHTML);
-        if (!hasCourse)
-            buildCourse(targetEntry.variable);
-        hasCourse = false;
-        if (document.getElementById("popup").style.display === "flex")
-            globalClick();
+    });
+
+    segments.forEach(segment => {
+        segment.ondragover = function (event) {
+            for (let i in coursesHTML)
+                if (targetEntry.variable.courseID == coursesHTML[i].variable.courseID)
+                    hasCourse = true;
+            if (!hasCourse)
+                middle.style.borderColor = "#FBDB2C";
+            else
+                middle.style.borderColor = "#FC7165";
+            this.style.background = "#1B1B1B";
+            event.preventDefault();
+        }
+        segment.ondragleave = function () {
+            this.style.background = "inherit";
+        }
+        segment.ondrop = function () {
+            console.log(coursesHTML);
+            if (!hasCourse)
+                buildCourse(targetEntry.variable, this);
+            hasCourse = false;
+            if (document.getElementById("popup").style.display === "flex")
+                globalClick();
+            this.style.background = "inherit";
+        }
+    });
+    middle.ondragleave = function () {
+        this.style.borderColor = "transparent";
     }
 
     // Adds selection functionality for course elements
@@ -291,7 +306,7 @@ function dashboardCheck() {
 * Builds the course elements
 *
 */
-function buildCourse(csvCourse) {
+function buildCourse(csvCourse, choiceDesignation) {
     let order;
     let section;
 
@@ -324,7 +339,7 @@ function buildCourse(csvCourse) {
         section = regenerative;
     } else {
         order = "ent"
-        section = fundamentals
+        section = choiceDesignation;
     }
 
     // Create elements
@@ -444,7 +459,7 @@ function buildCourse(csvCourse) {
 function deleteCourse(course, selected) {
     document.getElementById("popup").style.display = "none";
     trash.style.display = "none";
-
+    // Delete when course is in looking mode
     for (let i = 0; i < coursesHTML.length; i++) {
         coursesHTML[i].classList.remove("looking-prereq");
         if (coursesHTML[i].classList.contains("looking")) {
@@ -452,7 +467,7 @@ function deleteCourse(course, selected) {
             coursesHTML.splice(i, 1);
         }
     }
-
+    // Delete all selected courses
     if (selected !== null) {
         for (let element of selected) {
             element.parentElement.remove();
@@ -461,14 +476,13 @@ function deleteCourse(course, selected) {
                     coursesHTML.splice(i, 1);
         }
     }
-
+    // Delete double tapped courses
     if (course !== null) {
         for (let i in coursesHTML)
             if (course.firstChild.id === coursesHTML[i].variable.courseID)
                 coursesHTML.splice(i, 1);
         course.remove();
     }
-
     dashboardCheck();
     console.log(coursesHTML);
 }
@@ -627,7 +641,7 @@ function csvObjects(data) {
 */
 function traceCourse(element) {
     try {
-        console.log(element.variable.prereqs);
+        console.log("Initial Prereqs", element.variable.prereqs);
         clearQueue();
         buildPopup(element.variable);
         prereqQueue(element);
@@ -664,24 +678,34 @@ function prereqQueue(elements) {
     var temp = [];
     // buffer strings
     var tempStrings = [];
-    // buffer for all prereqs
-    var tempCompare = [];
     // check if elements is an array
     if (Array.isArray(elements)) {
+        // Place the arrows between prereq items
+        let arrowColumnInsert = document.createElement("span");
+        arrowColumnInsert.classList.add("arrow-column-insert");
+        insertSpace.appendChild(arrowColumnInsert);
+        let arrowInsert = document.createElement("span");
+        arrowInsert.classList.add("arrow-insert");
+        arrowColumnInsert.appendChild(arrowInsert);
+        // Build the column for prereq inserts
         let columnInsert = document.createElement("span");
         columnInsert.classList.add("column-insert");
         insertSpace.appendChild(columnInsert);
 
-        for (let i in elements) {
-            if (elements[i] instanceof Element && elements[i].variable.hasPrereq) {
-                for (let j in elements[i].variable.prereqs) {
-                    tempCompare.push(elements[i].variable.prereqs[j]);
-                }
-            }
-        }
-        console.log(tempCompare);
-
-        // go through array of elements
+        // Temporary group of element objects
+        var tempElements = elements.filter(element => element instanceof Element);
+        // Temporary group of element objects strings
+        var tempElementsStrings = [];
+        // Temporary group of aggregate prerequisites
+        var tempElementsPrereqs = [];
+        tempElements.forEach(element => {
+            tempElementsPrereqs = tempElementsPrereqs.concat(element.variable.prereqs);
+            tempElementsStrings.push(element.variable.courseID);
+        });
+        tempElementsPrereqs = [...new Set(tempElementsPrereqs)];
+        // Temporary intersecting elements between current column and subsequent prereq column
+        let intersecting = tempElementsStrings.filter(strings => tempElementsPrereqs.includes(strings));
+        // Go through array of elements
         for (let i in elements) {
             let itemInsert = document.createElement("span");
             itemInsert.classList.add("item-insert");
@@ -710,7 +734,6 @@ function prereqQueue(elements) {
                 });
 
                 elements[i].classList.add("looking-prereq");
-
                 // check if element has prereq
                 if (elements[i].variable.hasPrereq) {
                     // go through prereqs and locate courses in database
@@ -723,24 +746,26 @@ function prereqQueue(elements) {
                             }
                         }
                     }
-
                     let diff = elements[i].variable.prereqs.filter(prereqString => !tempStrings.includes(prereqString));
                     temp = [...temp, ...diff];
                 }
             }
         }
+
+        // Clear temporary prereq array of duplicates
         if (temp.length !== 0) {
             var unique = [...new Set(temp)];
+            // Delete items that are intersect current and subsequent columns
+            for (let i in unique)
+                if (unique[i] instanceof Element && intersecting.includes(unique[i].variable.courseID))
+                    unique.splice(i, 1);
             prereqQueue(unique);
         }
-        if (!columnInsert.hasChildNodes())
-            columnInsert.remove();
     } else {
         if (elements.parentElement.classList.contains("aside"))
             elements.parentElement.classList.add("pane-looking");
         else
             elements.classList.add("looking");
-
         // check if given has prereq
         if (elements.variable.hasPrereq) {
             let columnInsert = document.createElement("span");
