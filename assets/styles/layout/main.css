@@ -1,190 +1,136 @@
 /* Document settings */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    line-height: 140%;
+    line-height: 100%;
     text-decoration: none;
+    font-weight: 100;
     list-style: none;
+    font-family: 'Roboto', sans-serif;
 }
-html {
-    background: #424242;
-}
-body {
-    background: #F1D064;
-    background-size: 150px 150px;
-    background-repeat: repeat;
-}
+
 html, body {
     width: 100%;
     height: 100%;
-    font-family: Verdana, Geneva, sans-serif;
-    transition: background-color 0.1s;
-    -webkit-transition: background-color 0.1s;
 }
+
+html {
+    background: #424242;
+}
+
+body {
+    background: #EFF2E2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 ::-webkit-scrollbar {
     display: none;
 }
+
 ::selection {
     color: #FFFFFF;
     background-color: #7E7FD6;
 }
+
 ::-moz-selection {
     color: #FFFFFF;
     background-color: #7E7FD6;
 }
 
-#buttons {
-    width: 400px;
-    height: 80px;
-    position: absolute;
-    margin: auto;
-    left: 0;
-    right: 0;
-    top: calc(42% - 80px);
-    z-index: 999;
+#middle {
+    width: 58%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#title-space {
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    position: relative;
+    left: -105px;
 }
-.button {
-    width: 80px;
-    height: 80px;
-    font-size: 25px;
-    border-radius: 100%;
+
+#icon {
+    width: 100px;
     display: flex;
     align-items: center;
-    justify-content: space-around;
-    color: #EBEDF2;
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.4);
-}
-#linkedin {
-    background: #21567F;
-}
-#medium {
-    background: #090909;
-}
-#twitter {
-    background: #399DED;
-}
-#email {
-    background: #393939;
-}
-
-/* The mode switcher */
-#checkbox {
-    display: none;
-}
-.switch {
-    z-index: 999;
-    position: absolute;
-    margin: auto;
-    right: 30px;
-    top: 30px;
-    width: 52px;
-    height: 30px;
-    border-radius: 40px;
-}
-.slider {
-    cursor: pointer;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #363D51;
-    border-radius: 40px;
-    transition: .3s;
-    -webkit-transition: .3s;
-}
-.slider:before {
-    position: absolute;
-    left: 4px;
-    bottom: 3px;
-    content: "\0044";
-    font-family: 'font icons';
-    font-weight: bold;
-    font-size: 14px;
-    background: #F1D064;
-    color: #363D51;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 26px;
-    height: 24px;
-    width: 24px;
-    transition: all .3s;
-    -webkit-transition: all .3s;
-}
-#checkbox:checked+.slider {
-    background: #F1D064;
-}
-#checkbox:checked+.slider:before {
-    content: "\0046";
-    font-weight: bold;
-    font-size: 12px;
-    background: #363D51;
-    color: #F1D064;
-    transform: translateX(21px);
-    -webkit-transform: translateX(21px);
-    -ms-transform: translateX(21px);
-}
-
-/* Footer */
-footer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 80px;
-}
-#copyright {
-    color: #FFF498;
-    background: #F1D064;
-    width: 205px;
-    height: 35px;
-    position: absolute;
-    margin: auto;
-    left: 0;
-    right: 0;
-    top: 10%;
-    font-size: 13px;
-    line-height: 34px;
-    text-align: center;
-    border-radius: 4px;
-    border: 1px solid #FFF498;
+    justify-content: center;
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
 }
 
-/* iPhone X and Samsung Devices */
+#icon img {
+    width: 65%;
+    height: 65%;
+}
+
+#title {
+    font-size: 100px;
+    text-transform: uppercase;
+    color: #FC7165;
+}
+
+#sub-title {
+    font-size: 30px;
+}
+
+#buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+}
+
+.button {
+    width: 40px;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+}
+
+.button:hover {
+    color: #FC7165;
+}
+
+#copyright {
+    font-size: 16px;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    opacity: 0.2;
+}
+
+/*
+iPhone X and Samsung Devices
 @media(hover: hover) and (pointer: fine) {
-    #checkbox:hover+.slider {
-        background: #7E7FD6;
-    }
     #buttons .button:hover {
         background: #9394CC;
         color: #FFFFFF;
     }
 }
+*/
+
 @media screen and (max-width: 450px) {
-    body {
-        background-size: 80px 80px;
+    #title {
+        font-size: 50px;
     }
-    #buttons {
-        flex-direction: column;
-        width: 70px;
-        height: 400px;
-        top: 9%;
-    }
-    .button {
-        width: 70px;
-        height: 70px;
+    #sub-title {
         font-size: 25px;
     }
-    .switch {
-        top: 25px;
-        right: 25px;
+    #title-space {
+        left: 0;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
     }
 }

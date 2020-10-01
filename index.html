@@ -6,10 +6,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="description"
-        content="ReShaun Pintard is a Civil Engineer with a full stack software development background." />
-    <meta name="keywords"
-        content="reshaun donovon pintard, programmer portfolio, software engineer website, ecu, ncsu" />
+    <meta name="description" content="ReShaun Pintard is a Civil Engineer with a software development background." />
+    <meta name="keywords" content="reshaun donovon pintard, software engineer website, ecu, ncsu" />
     <meta name="robots" content="index, follow" />
     <meta name="google-site-verification" content="pQjHS5ENxB-WP00jXwR22bwkXZXDslU5aNv27QENY68" />
     <meta name="theme-color" content="#232323" />
@@ -25,54 +23,48 @@
         gtag('config', 'UA-124433067-1');
     </script>
     <!-- Page scripts -->
-    <script type="text/javascript" src="assets/scripts/main.js"></script>
+    <script type="text/javascript" src="assets/main.js"></script>
     <!-- Page styles -->
     <link rel="stylesheet" type="text/css" href="assets/styles/layout/main.css" />
-    <link rel="stylesheet" type="text/css" href="assets/styles/layout/dark.css" />
     <!-- Page fonts -->
     <link rel="stylesheet" href="assets/styles/font-icons/css/font-icons.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap" rel="stylesheet">
     <!-- Page title and icon -->
-    <link rel="icon" type="image/png" href="assets/piggy.png" />
+    <link rel="icon" type="image/png" href="assets/pin.png" />
     <title>ReShaun Pintard</title>
 </head>
 
 <body>
-    <!-- Mode switch -->
-    <label class="switch">
-        <input type="checkbox" id="checkbox">
-        <span class="slider"></span>
-        <script type="text/javascript">
-            modeChange();
-        </script>
-    </label>
-    <!-- Middle -->
-    <span id="buttons">
-        <a class="button" id="linkedin" target="blank" href="https://www.linkedin.com/in/reshaunpintard/">
-            <i class="icon-linkedin"></i>
-        </a>
-        <a class="button" id="medium" target="blank" href="https://medium.com/@reshaunpintard">
-            <i class="icon-medium"></i>
-        </a>
-        <a class="button" id="twitter" target="blank" href="https://twitter.com/reshaunpintard">
-            <i class="icon-twitter"></i>
-        </a>
-        <a class="button" id="email" href="mailto:rpintar@ncsu.edu">
-            <i class="icon-email"></i>
-        </a>
-    </span>
-    <!-- Footer -->
-    <footer>
+    <section id="middle">
+        <span id="title-space">
+            <div id="icon">
+                <img draggable="false" src="assets/pin.svg">
+            </div>
+            <h1 id="title">ReShaun Pintard</h1>
+        </span>
+
+        <h2 id="sub-title">Software Developer and Engineer</h2>
+
+        <span id="buttons">
+            <a class="button" id="linkedin" target="blank" href="https://www.linkedin.com/in/reshaunpintard/">
+                <i class="icon-linkedin"></i>
+            </a>
+            <a class="button" id="twitter" target="blank" href="https://twitter.com/reshaunpintard">
+                <i class="icon-twitter"></i>
+            </a>
+            <a class="button" id="medium" target="blank" href="https://medium.com/@reshaunpintard">
+                <i class="icon-medium"></i>
+            </a>
+            <a class="button" id="email" href="mailto:rpintar@ncsu.edu">
+                <i class="icon-email"></i>
+            </a>
+        </span>
+
         <span id="copyright">
             <script type="text/javascript">
-                document.write("ReShaun Pintard &#169; " + new Date().getFullYear());
+                document.write("&#169; " + new Date().getFullYear());
             </script>
         </span>
-    </footer>
+    </section>
 </body>
-
-<!-- Load page with cookies -->
-<script type="text/javascript">
-    load();
-</script>
-
 </html>
