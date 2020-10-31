@@ -27,12 +27,12 @@ window.onload = () => {
 };
 
 // Misc countdown function
-let count = 1000;
+let count = 10;
 const countDown = () => {
     let timer = document.getElementById("timer");
     if (count > 0) {
         timer.innerHTML =
-            `You'll be redirected to the <a href='index.html'>home page</a>
+            `You'll be redirected to the <a href='/'>home page</a>
             in <span style='color: #0382C0; font-size: 110%; font-weight: bold;'>
             ${count--}</span> secs (:`;
         setTimeout("countDown()", 1000);
