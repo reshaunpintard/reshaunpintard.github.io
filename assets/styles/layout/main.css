@@ -43,15 +43,14 @@ body {
 }
 
 #middle {
-    width: 55%;
+    width: 60%;
     height: auto;
-    display: flex;
-    flex-direction: column;
+    display: grid;
     gap: 30px;
 }
 
 #title {
-    font-size: 100px;
+    font-size: 70px;
     text-transform: uppercase;
     user-select: none;
     -webkit-user-select: none;
@@ -66,8 +65,8 @@ body {
 
 #buttons {
     display: flex;
-    flex-direction: row;
-    gap: 50px;
+    justify-content: space-between;
+    width: 50%;
 }
 
 .button {
@@ -92,6 +91,39 @@ body {
     color: #F0DF97;
 }
 
+/* Viewport configurations */
+
+@media screen and (max-width: 600px) {
+    #middle {
+        width: 50%;
+        gap: 25px;
+    }
+    #title {
+        font-size: 40px;
+    }
+    #sub-title {
+        font-size: 16px;
+    }
+    #buttons {
+        width: 80%;
+    }
+    .button {
+        font-size: 18px;
+    }
+    #copyright {
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 330px) {
+    #middle {
+        width: 70%;
+    }
+    #buttons {
+        width: 75%;
+    }
+}
+
 /*
 iPhone X and Samsung Devices
 @media(hover: hover) and (pointer: fine) {
@@ -101,56 +133,3 @@ iPhone X and Samsung Devices
     }
 }
 */
-
-@media screen and (max-width: 780px) {
-    #title {
-        font-size: 70px;
-    }
-    #sub-title {
-        font-size: 25px;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    #middle {
-        width: 50%;
-        gap: 20px;
-    }
-    #title {
-        font-size: 40px;
-    }
-    #sub-title {
-        font-size: 16px;
-    }
-    #buttons {
-        gap: 35px;
-    }
-    .button {
-        font-size: 22px;
-    }
-    #copyright {
-        font-size: 12px;
-    }
-}
-
-@media screen and (max-width: 370px) {
-    #middle {
-        width: 50%;
-        gap: 20px;
-    }
-    #title {
-        font-size: 30px;
-    }
-    #sub-title {
-        font-size: 12px;
-    }
-    #buttons {
-        gap: 25px;
-    }
-    .button {
-        font-size: 18px;
-    }
-    #copyright {
-        font-size: 10px;
-    }
-}
