@@ -13,6 +13,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- Page scripts -->
     <script type="text/javascript" src="assets/main.js"></script>
+    <script>window.onload = () => countDown(10)</script>
     <!-- Page styles -->
     <link rel="stylesheet" type="text/css" href="assets/styles/layout/misc.css" />
     <link rel="stylesheet" type="text/css" href="assets/styles/layout/main.css" />
@@ -30,12 +31,14 @@
             The page you are trying to reach is either down or does not exist. Try again later.
         </article>
 
-        <article id="timer">
-            <script>
-                countDown();
-            </script>
+        <article>
+            You'll be redirected to the <a href='/'>home page</a> in
+            <span
+                id="timer"
+                style='color: #0382C0; font-size: 110%; font-weight: bold;'>
+            </span>
+            secs (:
         </article>
-
     </section>
 </body>
 

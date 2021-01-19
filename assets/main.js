@@ -1,41 +1,46 @@
-/*
-window.onload = () =>
-    (window.localStorage.getItem("mode") === "dark") ? darkMode() : lightMode();
-const darkMode = () => {
-    document.querySelector('body').classList.add('dark');
-    window.localStorage.setItem("mode", "dark");
-    document.getElementById("checkbox").checked = true;
-}
-const lightMode = () => {
-    document.querySelector('body').classList.remove('dark');
-    window.localStorage.setItem("mode", "light");
-    document.getElementById("checkbox").checked = false;
-}
-*/
+let interval
 
 // Populate title with colored letters
 window.onload = () => {
-    let title = document.getElementById("title");
-    let output = "";
-    let letters = title.innerHTML.split("");
+    let title = document.getElementById("title")
+    let letters = title.innerHTML.split("")
+    let output = ""
+    const slider = document.getElementById("epilepsy-stop")
+    letters.forEach(letter => output += colorLetter(letter))
+    title.innerHTML = output
+    slider.value = window.localStorage.getItem("slider")
+    repeatPrint(title, letters, output, slider.value)
+    slider.onchange = () => {
+        window.localStorage.setItem("slider", slider.value)
+        clearInterval(interval)
+        console.log(slider.value)
+        repeatPrint(title, letters, output, slider.value)
+    }
+}
 
-    letters.forEach((letter) => {
-        let color = `hsla(${~~(360 * Math.random())}, 75%, 75%, 0.9)`;
-        output += "<span style='color: " + color + ";'>" + letter + "</span>";
-        title.innerHTML = output;
-    });
-};
+const repeatPrint = (title, letters, output, rate) => {
+    let time
+    if (rate == 1) time = 800
+    else if (rate == 2) time = 1
+    else time = 0
+    output = ""
+    interval = setInterval(() => {
+        letters.forEach(letter => output += colorLetter(letter))
+        title.innerHTML = output
+        output = ""
+    }, time)
+    if (time == 0) clearInterval(interval)
+}
+
+const colorLetter = letter => {
+    let color = `hsla(${~~(360 * Math.random())}, 75%, 75%, 0.9)`
+    return `<span style="color: ${color}">${letter}</span>`
+}
 
 // Misc countdown function
-let count = 10;
-const countDown = () => {
-    let timer = document.getElementById("timer");
-    if (count > 0) {
-        timer.innerHTML =
-            `You'll be redirected to the <a href='/'>home page</a>
-            in <span style='color: #0382C0; font-size: 110%; font-weight: bold;'>
-            ${count--}</span> secs (:`;
-        setTimeout("countDown()", 1000);
-    } else
-        window.location.href = "index.html";
+const countDown = count => {
+    let timer = document.getElementById("timer")
+    timer.innerHTML = count--
+    if (count > 0) setTimeout(() => countDown(count), 1000)
+    else window.location.href = "index.html"
 }
