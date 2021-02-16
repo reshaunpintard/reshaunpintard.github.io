@@ -1,6 +1,8 @@
 /* Document settings */
 
-@import url('https://fonts.googleapis.com/css2?family=Overpass:wght@700&display=swap');
+@import url('droid-serif/stylesheet.css');
+@import url('glacial-indifference/stylesheet.css');
+
 * {
     margin: 0;
     padding: 0;
@@ -9,7 +11,7 @@
     text-decoration: none;
     font-weight: 100;
     list-style: none;
-    font-family: 'Overpass', sans-serif;
+    font-family: 'Glacial Indifference', sans-serif;
 }
 
 html, body {
@@ -22,7 +24,7 @@ html {
 }
 
 body {
-    background: #31334d;
+    background: #E3F3FD;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -46,18 +48,20 @@ body {
     width: 50%;
     height: auto;
     display: grid;
-    gap: 22px;
+    gap: 15px;
 }
 
 #title {
     font-size: 70px;
     max-width: max-content;
-    text-transform: uppercase;
+    font-weight: bold;
+    color: #043A88;
+    font-family: 'Droid Serif';
 }
 
 #sub-title {
-    font-size: 35px;
-    color: #F3CA63;
+    font-size: 25px;
+    color: #043A88;
     text-transform: uppercase;
 }
 
@@ -67,22 +71,25 @@ body {
 }
 
 .button {
-    font-size: 25px;
+    font-size: 20px;
+    letter-spacing: 1px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #30334D;
-    background: #F3CA63;
-    padding: 20px 28px;
-    margin-right: 2px;
+    color: #b4cee0;
+    padding: 5px 0;
+    margin-right: 30px;
 }
 
 .button:hover {
-    background: #87C0DF;
+    color: #043A88;
 }
 
 #copyright {
-    font-size: 25px;
+    position: absolute;
+    bottom: 25px;
+    right: 35px;
+    font-size: 15px;
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -92,57 +99,8 @@ body {
     color: #717597;
 }
 
-#epilepsy-stop {
-    position: absolute;
-    right: 50px;
-    top: 40px;
-    -webkit-appearance: none;
-    appearance: none;
-    outline: none;
-    background: #383B5A;
-    height: 26px;
-    width: 80px;
-    border-radius: 4px;
-    padding: 0 5px;
-    -webkit-box-shadow: inset 1px 1px 3px 1px rgba(0,0,0,0.3);
-    box-shadow: inset 1px 1px 3px 1px rgba(0,0,0,0.3);
-    -moz-box-shadow: inset 1px 1px 3px 1px rgba(0,0,0,0.3);
-}
-
-#epilepsy-stop::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 22px;
-    height: 16px;
-    border-radius: 2px;
-    background: #FDD368;
-    opacity: 0.6;
-    cursor: pointer;
-    -webkit-box-shadow: -2px 2px 5px 1px rgba(0,0,0,0.4);
-    box-shadow: -2px 2px 5px 1px rgba(0,0,0,0.4);
-}
-
-#epilepsy-stop::-moz-range-thumb {
-    width: 22px;
-    height: 16px;
-    border-radius: 2px;
-    background: #FDD368;
-    opacity: 0.6;
-    cursor: pointer;
-    -moz-box-shadow: -2px 2px 5px 1px rgba(0,0,0,0.4);
-    box-shadow: -2px 2px 5px 1px rgba(0,0,0,0.4);
-}
-
-#epilepsy-stop:hover::-webkit-slider-thumb {
-    opacity: 0.8;
-}
-#epilepsy-stop:hover::-moz-range-thumb {
-    opacity: 0.8;
-}
-
 
 /* Viewport configurations */
-
 @media screen and (max-width: 600px) {
     #middle {
         width: 70%;
